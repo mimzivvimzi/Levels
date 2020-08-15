@@ -7,23 +7,33 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-protocol LevelDelegate {
-    func didSelectLevel(_ levelName: String)
-}
+//protocol LevelDelegate {
+//    func didSelectLevel(_ levelName: String)
+//}
 
 class LevelViewController: UIViewController {
     
-    var delegate: LevelDelegate?
-
+    //var delegate: LevelDelegate?
+    
+    private let selectedLevelBehaviorRelay = BehaviorRelay<String>(value: "User")
+    var selectedLevel: Observable<String> {
+        return selectedLevelBehaviorRelay.asObservable()
+    }
+        
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     @IBAction func levelSelected(_ sender: UIButton) {
         guard let levelName = sender.titleLabel?.text else { return }
-        if let delegateObject = delegate {
-            delegateObject.didSelectLevel(levelName)
-        }
+        
+        selectedLevelBehaviorRelay.accept(levelName)
+        
+//        if let delegateObject = delegate {
+//            delegateObject.didSelectLevel(levelName)
+//        }
     }
 }

@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import RxSwift
 
-class MainViewController: UIViewController, LevelDelegate {
+class MainViewController: UIViewController { //, LevelDelegate {
     
     func didSelectLevel(_ levelName: String) {
         levelLabel.text = levelName
@@ -17,6 +18,8 @@ class MainViewController: UIViewController, LevelDelegate {
     
     @IBOutlet weak var levelLabel: UILabel!
     
+    let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -24,7 +27,10 @@ class MainViewController: UIViewController, LevelDelegate {
 
     @IBAction func selectLevel(_ sender: UIBarButtonItem) {
         guard let levelVC = storyboard?.instantiateViewController(identifier: "LevelViewController") as? LevelViewController else { return }
-        levelVC.delegate = self
+        levelVC.selectedLevel.subscribe(onNext: { [weak self] level in
+            self?.levelLabel.text = "You chose \(level)"
+        })
+//        levelVC.delegate = self
         navigationController?.pushViewController(levelVC, animated: true)
     }
     
